@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ChristmasLightsTest {
+public class GridLightsTest {
 
     private GridLights gridLights;
     private int horizontalSize;
@@ -88,6 +88,89 @@ public class ChristmasLightsTest {
         // Assert
         AssertAllLightsByExpectedState(true, new LightPosition(999, 0), new LightPosition(horizontalSize, verticalSize));
         AssertAllLightsByExpectedState(false, new LightPosition(0, 0), new LightPosition(999, verticalSize));
+    }
+
+    @Test
+    void givenAllLightsOnWhenTurnOffFrom0_0_Through999_999_ShouldTurnOffAllLights() {
+        // Arrange
+        GivenAllLightsOn();
+
+        LightPosition topLeftLimit = new LightPosition(0, 0);
+        LightPosition bottomRightLimit = new LightPosition(999, 999);
+
+        // Act
+        gridLights.TurnOff(topLeftLimit, bottomRightLimit);
+
+        // Assert
+        AssertAllLightsByExpectedState(false, new LightPosition(0, 0), new LightPosition(horizontalSize, verticalSize));
+    }
+
+    @Test
+    void givenAllLightsOnTurnOffLightsFrom0_0_Through999_0_ShouldTurnOffFirstLineOfLights() {
+        // Arrange
+        GivenAllLightsOn();
+
+        LightPosition topLeftLimit = new LightPosition(0, 0);
+        LightPosition bottomRightLimit = new LightPosition(999, 0);
+
+        // Act
+        gridLights.TurnOff(topLeftLimit, bottomRightLimit);
+
+        // Assert
+        AssertAllLightsByExpectedState(false, new LightPosition(0, 0), new LightPosition(horizontalSize, 1));
+        AssertAllLightsByExpectedState(true, new LightPosition(0, 1), new LightPosition(horizontalSize, verticalSize));
+    }
+
+    @Test
+    void givenAllLightsOnTurnOffLightsFrom0_0_Through0_999_ShouldTurnOffFirstColumnOfLights() {
+        // Arrange
+        GivenAllLightsOn();
+
+        LightPosition topLeftLimit = new LightPosition(0, 0);
+        LightPosition bottomRightLimit = new LightPosition(0, 999);
+
+        // Act
+        gridLights.TurnOff(topLeftLimit, bottomRightLimit);
+
+        // Assert
+        AssertAllLightsByExpectedState(false, new LightPosition(0, 0), new LightPosition(1, verticalSize));
+        AssertAllLightsByExpectedState(true, new LightPosition(1, 0), new LightPosition(horizontalSize, verticalSize));
+    }
+
+    @Test
+    void givenAllLightsOnTurnOffLightsFrom0_999_Through999_999_ShouldTurnOffLastLineOfLights() {
+        //Arrange
+        GivenAllLightsOn();
+
+        LightPosition topLeftLimit = new LightPosition(0, 999);
+        LightPosition bottomRightLimit = new LightPosition(999, 999);
+
+        // Act
+        gridLights.TurnOff(topLeftLimit, bottomRightLimit);
+
+        // Assert
+        AssertAllLightsByExpectedState(false, new LightPosition(0, 999), new LightPosition(horizontalSize, verticalSize));
+        AssertAllLightsByExpectedState(true, new LightPosition(0, 0), new LightPosition(horizontalSize, 999));
+    }
+
+    @Test
+    void givenAllLightsOnTurnOffLightsFrom999_0_Through999_999_ShouldTurnOffLastColumnOfLights() {
+        // Arrange
+        GivenAllLightsOn();
+
+        LightPosition topLeftLimit = new LightPosition(999, 0);
+        LightPosition bottomRightLimit = new LightPosition(999, 999);
+
+        // Act
+        gridLights.TurnOff(topLeftLimit, bottomRightLimit);
+
+        // Assert
+        AssertAllLightsByExpectedState(false, new LightPosition(999, 0), new LightPosition(horizontalSize, verticalSize));
+        AssertAllLightsByExpectedState(true, new LightPosition(0, 0), new LightPosition(999, verticalSize));
+    }
+
+    private void GivenAllLightsOn() {
+        gridLights.TurnOn(new LightPosition(0, 0), new LightPosition(999, 999));
     }
 
     private void AssertAllLightsByExpectedState(boolean expectedState, LightPosition start, LightPosition limit) {
