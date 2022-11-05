@@ -11,10 +11,10 @@ public class GridLights {
         return arrayLights.get(columnLightPosition).get(lineLightPosition);
     }
 
-    public void TurnOn(int columnTopLeftLimit, int lineTopLeftLimit, int columnBottomRightLimit, int lineBottomRightLimit) {
-        for(int columnLightPosition = 0 ; columnLightPosition < arrayLights.size() ; ++columnLightPosition) {
+    public void TurnOn(LightPosition topLeftLimit, LightPosition bottomRightLimit) {
+        for (int columnLightPosition = 0; columnLightPosition < arrayLights.size(); ++columnLightPosition) {
             for (int lineLightPosition = 0; lineLightPosition < arrayLights.get(columnLightPosition).size(); lineLightPosition++) {
-                if(isLightPositionInsideLimits(columnTopLeftLimit, lineTopLeftLimit, columnBottomRightLimit, lineBottomRightLimit, columnLightPosition, lineLightPosition))
+                if (isLightPositionInsideLimits(topLeftLimit, bottomRightLimit, new LightPosition(columnLightPosition, lineLightPosition)))
                     this.arrayLights.get(columnLightPosition).set(lineLightPosition, true);
             }
         }
@@ -38,8 +38,10 @@ public class GridLights {
         return verticalArrayLights;
     }
 
-    private boolean isLightPositionInsideLimits(int columnTopLeftLimit, int lineTopLeftLimit, int columnBottomRightLimit, int lineBottomRightLimit, int columnLightPosition, int lineLightPosition) {
-        return lineLightPosition <= lineBottomRightLimit && columnLightPosition <= columnBottomRightLimit &&
-                lineLightPosition >= lineTopLeftLimit && columnLightPosition >= columnTopLeftLimit;
+    private boolean isLightPositionInsideLimits(LightPosition topLeftLimit, LightPosition bottomRightLimit, LightPosition light) {
+        boolean lightUnderOrAtBottomRightLimit = light.line() <= bottomRightLimit.line() && light.column() <= bottomRightLimit.column();
+        boolean lightUpperOrAtTopLeftLimit = light.line() >= topLeftLimit.line() && light.column() >= topLeftLimit.column();
+
+        return lightUnderOrAtBottomRightLimit && lightUpperOrAtTopLeftLimit;
     }
 }
